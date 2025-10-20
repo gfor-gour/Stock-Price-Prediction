@@ -75,13 +75,19 @@ async def startup_event():
             logger.warning("TensorFlow not available. Model loading skipped.")
             return
             
-        # Try to load the model from the models directory
+        # Try to load the model from the models directory; fallback to project root
         model_path = "models/lstm_model.h5"
+        root_model_path = "lstm_model.h5"
         if os.path.exists(model_path):
             model = tf.keras.models.load_model(model_path)
             logger.info(f"Model loaded successfully from {model_path}")
+        elif os.path.exists(root_model_path):
+            model = tf.keras.models.load_model(root_model_path)
+            logger.info(f"Model loaded successfully from {root_model_path}")
         else:
-            logger.warning(f"Model file not found at {model_path}. Please ensure your trained model is saved there.")
+            logger.warning(
+                f"Model file not found at {model_path} or {root_model_path}. Please place your trained model."
+            )
     except Exception as e:
         logger.error(f"Error loading model: {str(e)}")
 
